@@ -2,3 +2,6 @@
 
 #auth
 baileys_auth_info
+node_modules
+package-lock.json
+package.json

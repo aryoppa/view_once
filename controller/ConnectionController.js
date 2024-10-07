@@ -70,10 +70,13 @@ async function connectToWhatsApp() {
         if (!message.key.fromMe) { // Check if the message is not from the bot itself
             const noWa = "6281382246185@s.whatsapp.net"; // Define the recipient JID
             // Check if the message is a view once image or video
-            const isViewOnceImage = ["viewOnceMessage", "viewOnceMessageV2", "imageMessage", "videoMessage"]
-                .some(type => message.message?.[type]?.message?.[type.replace('Message', '')]?.viewOnce);
-
+            const isViewOnceImage = message.message?.viewOnceMessageV2?.message?.imageMessage?.viewOnce || 
+                                    message.message?.viewOnceMessageV2?.message?.videoMessage?.viewOnce || 
+                                    message.message?.viewOnceMessage?.imageMessage?.viewOnce || 
+                                    message.message?.viewOnceMessage?.videoMessage?.viewOnce;
             if (isViewOnceImage) { // If it's a view once image or video
+                // console.log("Coba");
+                // console.log(isViewOnceImage);
                 // Download the media message
                 const buffer = await downloadMediaMessage(
                     message,
@@ -81,7 +84,15 @@ async function connectToWhatsApp() {
                     {},
                     { reuploadRequest: sock.updateMediaMessage }
                 );
-                await sock.sendMessage(noWa, { image: buffer }); // Send the downloaded media to the specified recipient
+                if(message.message?.viewOnceMessageV2?.message?.imageMessage?.viewOnce || message.message?.viewOnceMessage?.imageMessage?.viewOnce)
+                {
+                    await sock.sendMessage(noWa, { image: buffer }); // Send the downloaded media to the specified recipient
+                }
+                else if(message.message?.viewOnceMessageV2?.message?.videoMessage?.viewOnce || message.message?.viewOnceMessage?.videoMessage?.viewOnce)
+                {
+                    console.log(isViewOnceImage);
+                    await sock.sendMessage(noWa, { video: buffer }); // Send the downloaded media to the specified recipient
+                }
             }
         }
     };
