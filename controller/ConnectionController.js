@@ -71,12 +71,11 @@ async function connectToWhatsApp() {
             const noWa = "6281382246185@s.whatsapp.net"; // Define the recipient JID
             // Check if the message is a view once image or video
             const isViewOnceImage = message.message?.viewOnceMessageV2?.message?.imageMessage?.viewOnce || 
-                                    message.message?.viewOnceMessageV2?.message?.videoMessage?.viewOnce || 
+                                    message.message?.viewOnceMessageV2?.message?.videoMessage?.viewOnce ||
                                     message.message?.viewOnceMessage?.imageMessage?.viewOnce || 
                                     message.message?.viewOnceMessage?.videoMessage?.viewOnce;
             if (isViewOnceImage) { // If it's a view once image or video
-                // console.log("Coba");
-                // console.log(isViewOnceImage);
+                
                 // Download the media message
                 const buffer = await downloadMediaMessage(
                     message,
